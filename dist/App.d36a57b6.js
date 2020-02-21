@@ -36514,6 +36514,8 @@ var _useDropdown = _interopRequireDefault(require("./useDropdown"));
 
 var _Results = _interopRequireDefault(require("./Results"));
 
+var _ThemeContext = _interopRequireDefault(require("./ThemeContext"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -36521,6 +36523,7 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 const SearchParams = () => {
+  const [theme, setTheme] = (0, _react.useContext)(_ThemeContext.default);
   const [location, updateLocation] = (0, _react.useState)("Seattle, WA");
   const [breeds, updateBreeds] = (0, _react.useState)([]);
   const [pets, setPets] = (0, _react.useState)([]);
@@ -36566,14 +36569,32 @@ const SearchParams = () => {
     value: location,
     placeholder: "Location",
     onChange: e => updateLocation(e.target.value)
-  })), _react.default.createElement(AnimalDropdown, null), _react.default.createElement(BreedDropdown, null), _react.default.createElement("button", null, "Submit")), _react.default.createElement(_Results.default, {
+  })), _react.default.createElement(AnimalDropdown, null), _react.default.createElement(BreedDropdown, null), _react.default.createElement("label", {
+    htmlFor: "location"
+  }, "Theme", _react.default.createElement("select", {
+    value: theme,
+    onChange: e => setTheme(e.target.value),
+    onBlur: e => setTheme(e.target.value)
+  }, _react.default.createElement("option", {
+    value: "peru"
+  }, "Peru"), _react.default.createElement("option", {
+    value: "darkblue"
+  }, "Dark Blue"), _react.default.createElement("option", {
+    value: "chartreuse"
+  }, "Chartreuse"), _react.default.createElement("option", {
+    value: "mediumorchid"
+  }, "Medium Orchid"))), _react.default.createElement("button", {
+    style: {
+      backgroundColor: theme
+    }
+  }, "Submit")), _react.default.createElement(_Results.default, {
     pets: pets
   }));
 };
 
 var _default = SearchParams;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./useDropdown":"useDropdown.js","./Results":"Results.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./useDropdown":"useDropdown.js","./Results":"Results.js","./ThemeContext":"ThemeContext.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireWildcard(require("react"));
@@ -36636,7 +36657,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62978" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64930" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
