@@ -36172,7 +36172,7 @@ class Carousel extends _react.default.Component {
 
 var _default = Carousel;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"Details.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js"}],"Modal.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36180,11 +36180,133 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _react = _interopRequireWildcard(require("react"));
+
+var _reactDom = require("react-dom");
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+const modalRoot = document.getElementById("modal");
+
+const Modal = ({
+  children
+}) => {
+  const elRef = (0, _react.useRef)(null);
+
+  if (!elRef.current) {
+    elRef.current = document.createElement("div");
+  }
+
+  (0, _react.useEffect)(() => {
+    modalRoot.appendChild(elRef.current);
+    return () => modalRoot.removeChild(elRef.current);
+  }, []);
+  return (0, _reactDom.createPortal)(_react.default.createElement("div", null, children), elRef.current);
+};
+
+var _default = Modal;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js"}],"ErrorBoundary.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _router = require("@reach/router");
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+// mostly code from reactjs.org/docs/error-boundaries.html
+class ErrorBoundary extends _react.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasError: false,
+      redirect: false
+    };
+  }
+
+  static getDerivedStateFromError() {
+    return {
+      hasError: true
+    };
+  }
+
+  componentDidCatch(error, info) {
+    console.error("ErrorBoundary caught an error", error, info);
+  }
+
+  componentDidUpdate() {
+    if (this.state.hasError) {
+      setTimeout(() => this.setState({
+        redirect: true
+      }), 5000);
+    }
+  }
+
+  render() {
+    if (this.state.redirect) {
+      return _react.default.createElement(_router.Redirect, {
+        to: "/",
+        noThrow: true
+      });
+    }
+
+    if (this.state.hasError) {
+      return _react.default.createElement("h1", null, "There was an error with this listing. ", _react.default.createElement(_router.Link, {
+        to: "/"
+      }, "Click here"), " ", "to back to the home page or wait five seconds");
+    }
+
+    return this.props.children;
+  }
+
+}
+
+var _default = ErrorBoundary;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","@reach/router":"../node_modules/@reach/router/es/index.js"}],"ThemeContext.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+const ThemeContext = (0, _react.createContext)(["green", () => {}]);
+var _default = ThemeContext;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"Details.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = DetailsErrorBoundary;
+
 var _react = _interopRequireDefault(require("react"));
 
 var _pet = _interopRequireDefault(require("@frontendmasters/pet"));
 
+var _router = require("@reach/router");
+
 var _Carousel = _interopRequireDefault(require("./Carousel"));
+
+var _Modal = _interopRequireDefault(require("./Modal"));
+
+var _ErrorBoundary = _interopRequireDefault(require("./ErrorBoundary"));
+
+var _ThemeContext = _interopRequireDefault(require("./ThemeContext"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36195,8 +36317,15 @@ class Details extends _react.default.Component {
     super(...args);
 
     _defineProperty(this, "state", {
-      loading: true
+      loading: true,
+      showModal: false
     });
+
+    _defineProperty(this, "toggleModal", () => this.setState({
+      showModal: !this.state.showModal
+    }));
+
+    _defineProperty(this, "adopt", () => (0, _router.navigate)(this.state.url));
   }
 
   componentDidMount() {
@@ -36204,6 +36333,7 @@ class Details extends _react.default.Component {
       animal
     }) => {
       this.setState({
+        url: animal.url,
         name: animal.name,
         animal: animal.type,
         location: `${animal.contact.address.city}, ${animal.contact.address.state}`,
@@ -36228,20 +36358,33 @@ class Details extends _react.default.Component {
       location,
       description,
       media,
-      name
+      name,
+      showModal
     } = this.state;
     return _react.default.createElement("div", {
       className: "details"
     }, _react.default.createElement(_Carousel.default, {
       media: media
-    }), _react.default.createElement("div", null, _react.default.createElement("h1", null, name), _react.default.createElement("h2", null, `${animal} — ${breed} — ${location}`), _react.default.createElement("button", null, "Adopt ", name), _react.default.createElement("p", null, description)));
+    }), _react.default.createElement("div", null, _react.default.createElement("h1", null, name), _react.default.createElement("h2", null, `${animal} — ${breed} — ${location}`), _react.default.createElement(_ThemeContext.default.Consumer, null, ([theme]) => _react.default.createElement("button", {
+      onClick: this.toggleModal,
+      style: {
+        backgroundColor: theme
+      }
+    }, "Adopt ", name)), _react.default.createElement("p", null, description), showModal ? _react.default.createElement(_Modal.default, null, _react.default.createElement("h1", null, "Would you like to adopt ", name, "?"), _react.default.createElement("div", {
+      className: "buttons"
+    }, _react.default.createElement("button", {
+      onClick: this.adopt
+    }, "Yes"), _react.default.createElement("button", {
+      onClick: this.toggleModal
+    }, "No, I am a monster"))) : null));
   }
 
 }
 
-var _default = Details;
-exports.default = _default;
-},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./Carousel":"Carousel.js"}],"useDropdown.js":[function(require,module,exports) {
+function DetailsErrorBoundary(props) {
+  return _react.default.createElement(_ErrorBoundary.default, null, _react.default.createElement(Details, props));
+}
+},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","./Carousel":"Carousel.js","./Modal":"Modal.js","./ErrorBoundary":"ErrorBoundary.js","./ThemeContext":"ThemeContext.js"}],"useDropdown.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36430,20 +36573,7 @@ const SearchParams = () => {
 
 var _default = SearchParams;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./useDropdown":"useDropdown.js","./Results":"Results.js"}],"ThemeContext.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = require("react");
-
-const ThemeContext = (0, _react.createContext)(["green", () => {}]);
-var _default = ThemeContext;
-exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./useDropdown":"useDropdown.js","./Results":"Results.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireWildcard(require("react"));
@@ -36506,7 +36636,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61657" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62978" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
