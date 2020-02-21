@@ -33418,49 +33418,105 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+const useDropdown = (label, defaultState, options) => {
+  const [state, setState] = (0, _react.useState)(defaultState);
+  const id = `use-dropdown-${label.replace("", "").toLowerCase()}`;
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-var useDropdown = function useDropdown(label, defaultState, options) {
-  var _useState = (0, _react.useState)(defaultState),
-      _useState2 = _slicedToArray(_useState, 2),
-      state = _useState2[0],
-      setState = _useState2[1];
-
-  var id = "use-dropdown-".concat(label.replace("", "").toLowerCase());
-
-  var Dropdown = function Dropdown() {
-    return _react.default.createElement("label", {
-      htmlFor: id
-    }, label, _react.default.createElement("select", {
-      id: id,
-      value: state,
-      onChange: function onChange(e) {
-        return setState(e.target.value);
-      },
-      onBlur: function onBlur(e) {
-        return setState(e.target.value);
-      },
-      disabled: options.length === 0
-    }, _react.default.createElement("option", null, "All"), options.map(function (item) {
-      return _react.default.createElement("option", {
-        key: item,
-        value: item
-      }, item);
-    })));
-  };
+  const Dropdown = () => _react.default.createElement("label", {
+    htmlFor: id
+  }, label, _react.default.createElement("select", {
+    id: id,
+    value: state,
+    onChange: e => setState(e.target.value),
+    onBlur: e => setState(e.target.value),
+    disabled: options.length === 0
+  }, _react.default.createElement("option", null, "All"), options.map(item => _react.default.createElement("option", {
+    key: item,
+    value: item
+  }, item))));
 
   return [state, Dropdown, setState];
 };
 
 var _default = useDropdown;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"SearchParams.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js"}],"Pet.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Pet = props => {
+  const {
+    name,
+    animal,
+    breed,
+    media,
+    location,
+    id
+  } = props;
+  let hero = "http://placecorgi.com/300/300";
+
+  if (media.length) {
+    hero = media[0].small;
+  }
+
+  return _react.default.createElement("a", {
+    href: `/details/${id}`,
+    className: "pet"
+  }, _react.default.createElement("div", {
+    className: "image-container"
+  }, _react.default.createElement("img", {
+    src: hero,
+    alt: name
+  })), _react.default.createElement("div", {
+    className: "info"
+  }, _react.default.createElement("h1", null, name), _react.default.createElement("h2", null, `${animal} — ${breed} — ${location}`)));
+};
+
+var _default = Pet;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"Results.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _Pet = _interopRequireDefault(require("./Pet"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Results = ({
+  pets
+}) => {
+  return _react.default.createElement("div", {
+    className: "search"
+  }, !pets.length ? _react.default.createElement("h1", null, "No Pets Found") : pets.map(pet => {
+    return _react.default.createElement(_Pet.default, {
+      animal: pet.type,
+      key: pet.id,
+      name: pet.name,
+      breed: pet.breeds.primary,
+      media: pet.photos,
+      location: `${pet.contact.address.city}, ${pet.contact.address.state}`,
+      id: pet.id
+    });
+  }));
+};
+
+var _default = Results;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","./Pet":"Pet.js"}],"SearchParams.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33472,7 +33528,9 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _pet = _interopRequireWildcard(require("@frontendmasters/pet"));
 
-var _useDropdown5 = _interopRequireDefault(require("./useDropdown"));
+var _useDropdown = _interopRequireDefault(require("./useDropdown"));
+
+var _Results = _interopRequireDefault(require("./Results"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33480,98 +33538,42 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+const SearchParams = () => {
+  const [location, updateLocation] = (0, _react.useState)("Seattle, WA");
+  const [breeds, updateBreeds] = (0, _react.useState)([]);
+  const [pets, setPets] = (0, _react.useState)([]);
+  const [animal, AnimalDropdown] = (0, _useDropdown.default)("Animal", "dog", _pet.ANIMALS);
+  const [breed, BreedDropdown, updateBreed] = (0, _useDropdown.default)("Breed", "", breeds);
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-var SearchParams = function SearchParams() {
-  var _useState = (0, _react.useState)("Seattle, WA"),
-      _useState2 = _slicedToArray(_useState, 2),
-      location = _useState2[0],
-      setLocation = _useState2[1];
-
-  var _useState3 = (0, _react.useState)([]),
-      _useState4 = _slicedToArray(_useState3, 2),
-      breeds = _useState4[0],
-      setBreeds = _useState4[1];
-
-  var _useDropdown = (0, _useDropdown5.default)("Animal", "dog", _pet.ANIMALS),
-      _useDropdown2 = _slicedToArray(_useDropdown, 2),
-      animal = _useDropdown2[0],
-      AnimalDropdown = _useDropdown2[1];
-
-  var _useDropdown3 = (0, _useDropdown5.default)("Breed", "", breeds),
-      _useDropdown4 = _slicedToArray(_useDropdown3, 3),
-      breed = _useDropdown4[0],
-      BreedDropdown = _useDropdown4[1],
-      setBreed = _useDropdown4[2];
-
-  var _useState5 = (0, _react.useState)([]),
-      _useState6 = _slicedToArray(_useState5, 2),
-      pets = _useState6[0],
-      setPets = _useState6[1];
-
-  function requestPets() {
-    return _requestPets.apply(this, arguments);
+  async function requestPets() {
+    const {
+      animals
+    } = await _pet.default.animals({
+      location,
+      breed,
+      type: animal
+    });
+    console.log("animals", animals);
+    setPets(animals || []);
   }
 
-  function _requestPets() {
-    _requestPets = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee() {
-      var _ref3, animals;
+  (0, _react.useEffect)(() => {
+    updateBreeds([]);
+    updateBreed("");
 
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return _pet.default.animals({
-                location: location,
-                breed: breed,
-                type: animal
-              });
-
-            case 2:
-              _ref3 = _context.sent;
-              animals = _ref3.animals;
-              setPets(animals || []);
-
-            case 5:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-    return _requestPets.apply(this, arguments);
-  }
-
-  (0, _react.useEffect)(function () {
-    setBreeds([]);
-    setBreed("");
-
-    _pet.default.breeds(animal).then(function (_ref) {
-      var apiBreeds = _ref.breeds;
-      var breedStrings = apiBreeds.map(function (_ref2) {
-        var name = _ref2.name;
-        return name;
-      });
-      setBreeds(breedStrings);
+    _pet.default.breeds(animal).then(({
+      breeds
+    }) => {
+      const breedStrings = breeds.map(({
+        name
+      }) => name);
+      updateBreeds(breedStrings);
     }, console.error);
-  }, [animal, setBreed, setBreeds]);
+  }, [animal]);
   return _react.default.createElement("div", {
     className: "search-params"
   }, _react.default.createElement("form", {
-    onSubmit: function onSubmit(e) {
+    onSubmit: e => {
       e.preventDefault();
       requestPets();
     }
@@ -33580,16 +33582,16 @@ var SearchParams = function SearchParams() {
   }, "Location", _react.default.createElement("input", {
     id: "location",
     value: location,
-    placeholder: "location",
-    onChange: function onChange(e) {
-      return setLocation(e.target.value);
-    }
-  })), _react.default.createElement(AnimalDropdown, null), _react.default.createElement(BreedDropdown, null), _react.default.createElement("button", null, "Submit")));
+    placeholder: "Location",
+    onChange: e => updateLocation(e.target.value)
+  })), _react.default.createElement(AnimalDropdown, null), _react.default.createElement(BreedDropdown, null), _react.default.createElement("button", null, "Submit")), _react.default.createElement(_Results.default, {
+    pets: pets
+  }));
 };
 
 var _default = SearchParams;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./useDropdown":"useDropdown.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./useDropdown":"useDropdown.js","./Results":"Results.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -33600,7 +33602,7 @@ var _SearchParams = _interopRequireDefault(require("./SearchParams"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var App = function App() {
+const App = () => {
   return _react.default.createElement(_react.default.StrictMode, null, _react.default.createElement("div", null, _react.default.createElement("h1", null, "Adopt Me!"), _react.default.createElement(_SearchParams.default, null)));
 };
 
@@ -33633,7 +33635,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57280" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50296" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
