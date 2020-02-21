@@ -29,7 +29,7 @@
     "prettier": "^1.16.1"
   },
   "scripts": {
-    "pre-deploy": "npm start",
+    "pre-deploy": "npm run build",
     "deploy": "gh-pages -d build",
     "clear-build-cache": "rm -rf .cache/ dist/",
     "dev": "parcel src/index.html",
